@@ -38,6 +38,7 @@ public class ServerWindow extends JFrame {
         logArea.setEditable(false);
         logArea.setBackground(Color.WHITE);
         logArea.append("Server doesn't work\n");
+        logArea.append(logFile.getLogInfo());
         return logArea;
     }
 

@@ -1,5 +1,6 @@
 package ru.jdk.server;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -24,6 +25,20 @@ public class ServerLog {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    String getLogInfo() {
+        StringBuilder sb = new StringBuilder();
+        try(BufferedReader bufReader = new BufferedReader(new FileReader(logFile));) {
+            String line = bufReader.readLine();
+            while (line != null) {
+                sb.append(line).append("\n");
+                line = bufReader.readLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
 
 }
