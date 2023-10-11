@@ -25,9 +25,10 @@ public class ClientGUI extends JFrame {
 
     Client client;
     private ServerWindow server;
-    public ClientGUI (ServerWindow serverWindow) {
+
+    public ClientGUI(ServerWindow serverWindow) {
         this.server = serverWindow;
-        // setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
         setLocation(WINDOW_POSX, WINDOW_POSY);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setTitle("Chat client");
@@ -57,7 +58,9 @@ public class ClientGUI extends JFrame {
                 if (checkConnection()) {
                     isClientConnected = true;
                     panelLogin.setVisible(false);
-                    log.append("Соединение установлено\n");
+                    panelSendMsg.setVisible(true);
+                    log.append("---Соединение установлено---\n");
+                    log.append(server.logFile.getLogInfo());
                 }
             }
         });
@@ -74,7 +77,7 @@ public class ClientGUI extends JFrame {
 
     private Component createPanelSendMsg() {
         panelSendMsg = new JPanel(new BorderLayout());
-        panelSendMsg.setVisible(true);
+        panelSendMsg.setVisible(false);
         panelSendMsg.add(tfMessage, BorderLayout.CENTER);
         panelSendMsg.add(createBtnSend(), BorderLayout.EAST);
         tfMessage.addKeyListener(new KeyAdapter() {
@@ -109,10 +112,9 @@ public class ClientGUI extends JFrame {
         }
     }
 
-
     private boolean checkConnection() {
         if (!server.serverStart) {
-            log.append("Соединение с сервером отсутствует\n");
+            log.append("!!!Соединение с сервером отсутствует\n");
             return false;
         }
         // isClientConnected ???
