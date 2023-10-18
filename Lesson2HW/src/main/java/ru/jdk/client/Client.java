@@ -36,8 +36,13 @@ public class Client {
             clientView.showMessage("Логин не заполнен");
             return false;
         } else if (login.matches("[A-Za-z]+_?[A-Za-z0-9]+")) {
-            this.name = login;
-            return true;
+            if (!server.isLoginAlreadyExists(login)) {
+                this.name = login;
+                return true;
+            } else {
+                clientView.showMessage("Клиент с таким логином уже существует");
+                return false;
+            }
         } else {
             clientView.showMessage("Неверный логин");
             return false;
@@ -53,11 +58,6 @@ public class Client {
         } else {
             printText("Нет подключения к серверу");
         }
-    }
-
-    // нам присылают
-    public void serverAnswer(String answer) {
-        printText(answer);
     }
 
     public void disconnectFromServer() {

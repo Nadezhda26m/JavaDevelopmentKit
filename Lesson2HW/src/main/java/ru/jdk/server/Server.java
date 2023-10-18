@@ -91,4 +91,11 @@ public class Server {
         }
     }
 
+    public boolean isLoginAlreadyExists(String login) {
+        for (Client client : clientList) {
+            if (client.getName().equals(login)) return true;
+        }
+        return false;
+    }
+
 }

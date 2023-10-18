@@ -11,8 +11,9 @@
     <modules>
         <module>Lesson2</module>
         <module>Lesson1</module>
-        <module>Lesson1SemVers1</module>
         <module>Lesson1HW</module>
+        <module>Seminar2</module>
+        <module>Lesson2HW</module>
     </modules>
 
     <properties>
