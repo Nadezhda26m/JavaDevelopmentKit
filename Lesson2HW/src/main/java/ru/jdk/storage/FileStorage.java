@@ -1,5 +1,7 @@
 package ru.jdk.storage;
 
+import ru.jdk.settings.Configuration;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,12 +9,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileStorage implements Repository {
-    private String STORAGE_PATH = "Lesson2HW/src/main/java/ru/jdk/log/";
+    private String STORAGE_PATH = Configuration.getRepositoryPath(this.getClass());
+    // private String STORAGE_PATH = "Lesson2HW/src/main/java/ru/jdk/log/";
     private File logFile;
+    private final String FILE_NAME = "log";
+    private final String FILE_EXTENSION = ".txt";
 
     public FileStorage() {
+        findOrCreateFile(FILE_NAME);
+    }
+
+    private void findOrCreateFile(String fileName) {
         new File(STORAGE_PATH).mkdirs();
-        STORAGE_PATH += "log.txt";
+        STORAGE_PATH += fileName + FILE_EXTENSION;
         this.logFile = new File(STORAGE_PATH);
         try {
             if (!logFile.exists()) logFile.createNewFile();
