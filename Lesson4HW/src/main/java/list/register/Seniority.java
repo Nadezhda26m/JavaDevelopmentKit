@@ -34,8 +34,8 @@ public class Seniority {
     void addCurrentWork(LocalDate startDate) {
         if (!toPresentTime) {
             toPresentTime = true;
-            dateRecordUpdated = startDate;
-            numberOfDays += ChronoUnit.DAYS.between(startDate, LocalDateTime.now());
+            dateRecordUpdated = LocalDateTime.now().toLocalDate();
+            numberOfDays += ChronoUnit.DAYS.between(startDate, dateRecordUpdated);
         }
     }
 
