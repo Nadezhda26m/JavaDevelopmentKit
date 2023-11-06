@@ -5,16 +5,19 @@ public class Line extends Thread {
 
     @Override
     public void run() {
+        sleepMS(100);
+        while (!stop) {
+            System.out.println("--------------------");
+            sleepMS(1000);
+        }
+    }
+
+    private void sleepMS(long ms) {
         try {
-            Thread.sleep(100);
-            while (!stop) {
-                System.out.println("--------------------");
-                Thread.sleep(1000);
-            }
+            Thread.sleep(ms);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     public boolean isStop() {

@@ -28,48 +28,60 @@ public class Thinker extends Thread {
     @Override
     public void run() {
         while (countCompletedMeal < MAX_COUNT_MEAL) {
-            try {
-                if (state == State.THINKING && takeForks()) {
-                    eating();
-                } else {
-                    thinking();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            if (state == State.THINKING && takeForks()) {
+                eating();
+            } else thinking();
         }
         cdl.countDown();
     }
 
-    public State getStateMeal() {
-        return state;
+    private boolean takeForks() {
+        if (takeFork(leftFork)) {
+            if (takeFork(rightFork)) {
+                return true;
+            } else putFork(leftFork);
+        }
+        return false;
     }
 
-    private boolean takeForks() {
+    private boolean takeFork(Fork fork) {
         synchronized (this) {
-            if (leftFork.isAvailable() && rightFork.isAvailable()) {
-                leftFork.setAvailable(!leftFork.isAvailable());
-                rightFork.setAvailable(!rightFork.isAvailable());
+            if (fork.isAvailable()) {
+                fork.setAvailable(false);
                 return true;
             }
         }
         return false;
     }
 
-    private synchronized void eating() throws InterruptedException {
+    private void putFork(Fork fork) {
+        synchronized (this) {
+            fork.setAvailable(true);
+        }
+    }
+
+    private void eating() {
         state = State.EATING;
         countCompletedMeal++;
         System.out.println(Thread.currentThread().getName() + " кушает "
                 + countCompletedMeal + " раз");
-        Thread.sleep(1000);
-        leftFork.setAvailable(!leftFork.isAvailable());
-        rightFork.setAvailable(!rightFork.isAvailable());
+        sleepMS(1000);
+        putFork(leftFork);
+        putFork(rightFork);
     }
 
-    private void thinking() throws InterruptedException {
+    private void thinking() {
         state = State.THINKING;
         System.out.println(Thread.currentThread().getName() + " думает");
-        Thread.sleep(1000);
+        sleepMS(1000);
+    }
+
+    private void sleepMS(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
