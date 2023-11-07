@@ -7,12 +7,7 @@ public class Thinker extends Thread {
     private final int placeID;
     private int countCompletedMeal;
     private CountDownLatch cdl;
-
-    enum State {
-        EATING, THINKING
-    }
-
-    private State state;
+    private boolean thinking;
     private final Fork leftFork;
     private final Fork rightFork;
 
@@ -21,14 +16,14 @@ public class Thinker extends Thread {
         this.placeID = placeID;
         this.leftFork = leftFork;
         this.rightFork = rightFork;
-        this.state = State.THINKING;
         this.cdl = cdl;
+        thinking = true;
     }
 
     @Override
     public void run() {
         while (countCompletedMeal < MAX_COUNT_MEAL) {
-            if (state == State.THINKING && takeForks()) {
+            if (thinking && takeForks()) {
                 eating();
             } else thinking();
         }
@@ -45,23 +40,19 @@ public class Thinker extends Thread {
     }
 
     private boolean takeFork(Fork fork) {
-        synchronized (this) {
-            if (fork.isAvailable()) {
-                fork.setAvailable(false);
-                return true;
-            }
+        if (fork.isAvailable()) {
+            fork.setAvailable(false);
+            return true;
         }
         return false;
     }
 
     private void putFork(Fork fork) {
-        synchronized (this) {
-            fork.setAvailable(true);
-        }
+        fork.setAvailable(true);
     }
 
     private void eating() {
-        state = State.EATING;
+        thinking = false;
         countCompletedMeal++;
         System.out.println(Thread.currentThread().getName() + " кушает "
                 + countCompletedMeal + " раз");
@@ -71,7 +62,7 @@ public class Thinker extends Thread {
     }
 
     private void thinking() {
-        state = State.THINKING;
+        thinking = true;
         System.out.println(Thread.currentThread().getName() + " думает");
         sleepMS(1000);
     }

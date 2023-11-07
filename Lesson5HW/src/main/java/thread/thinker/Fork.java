@@ -13,7 +13,7 @@ public class Fork {
         return available;
     }
 
-    public void setAvailable(boolean available) {
+    public synchronized void setAvailable(boolean available) {
         this.available = available;
     }
 
