@@ -7,62 +7,40 @@ public class Thinker extends Thread {
     private final int placeID;
     private int countCompletedMeal;
     private CountDownLatch cdl;
-    private boolean thinking;
-    private final Fork leftFork;
-    private final Fork rightFork;
+    private final int leftFork;
+    private final int rightFork;
+    private final Table table;
 
-    public Thinker(int placeID, Fork leftFork, Fork rightFork, CountDownLatch cdl) {
+    public Thinker(int placeID, Table table, int leftFork, int rightFork, CountDownLatch cdl) {
         super("Философ" + placeID);
         this.placeID = placeID;
+        this.table = table;
         this.leftFork = leftFork;
         this.rightFork = rightFork;
         this.cdl = cdl;
-        thinking = true;
     }
 
     @Override
     public void run() {
         while (countCompletedMeal < MAX_COUNT_MEAL) {
-            if (thinking && takeForks()) {
-                eating();
-            } else thinking();
+            thinking();
+            eating();
         }
+        System.out.println(Thread.currentThread().getName() + " наелся");
         cdl.countDown();
     }
 
-    private boolean takeForks() {
-        if (takeFork(leftFork)) {
-            if (takeFork(rightFork)) {
-                return true;
-            } else putFork(leftFork);
-        }
-        return false;
-    }
-
-    private boolean takeFork(Fork fork) {
-        if (fork.isAvailable()) {
-            fork.setAvailable(false);
-            return true;
-        }
-        return false;
-    }
-
-    private void putFork(Fork fork) {
-        fork.setAvailable(true);
-    }
-
     private void eating() {
-        thinking = false;
-        countCompletedMeal++;
-        System.out.println(Thread.currentThread().getName() + " кушает "
-                + countCompletedMeal + " раз");
-        sleepMS(1000);
-        putFork(leftFork);
-        putFork(rightFork);
+        if (table.tryGetForks(leftFork, rightFork)) {
+            countCompletedMeal++;
+            System.out.println(Thread.currentThread().getName() + " кушает "
+                    + countCompletedMeal + " раз вилками L:" + (leftFork + 1)  + " и R:" + (rightFork + 1));
+            sleepMS(1000);
+            table.putForks(leftFork, rightFork);
+        }
     }
 
     private void thinking() {
-        thinking = true;
         System.out.println(Thread.currentThread().getName() + " думает");
         sleepMS(1000);
     }
