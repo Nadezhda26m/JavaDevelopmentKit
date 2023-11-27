@@ -1,8 +1,7 @@
 package thread.thinker;
 
 public class Fork {
-    // private volatile boolean available;
-    private boolean available; // доступный
+    private volatile boolean available; // доступный
     private final int placeID;
 
     public Fork(int placeID) {
@@ -14,7 +13,7 @@ public class Fork {
         return available;
     }
 
-    public void setAvailable(boolean available) {
+    public synchronized void setAvailable(boolean available) {
         this.available = available;
     }
 

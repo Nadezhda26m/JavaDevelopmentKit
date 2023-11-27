@@ -1,11 +1,12 @@
 package thread.thinker;
 
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 public class Table extends Thread {
     private final int COUNT_ELEMENTS = 5;
-    private Fork[] forks;
-    private Thinker[] thinkers;
+    private ArrayList<Fork> forks;
+    private ArrayList<Thinker> thinkers;
     private CountDownLatch cdl;
 
     public Table() {
@@ -26,22 +27,7 @@ public class Table extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("Все поели");
         thread.setStop(!thread.isStop());
-    }
-
-    public synchronized boolean tryGetForks(int leftFork, int rightFork) {
-        if (forks[leftFork].isAvailable() && forks[rightFork].isAvailable()) {
-            forks[leftFork].setAvailable(false);
-            forks[rightFork].setAvailable(false);
-            return true;
-        }
-        return false;
-    }
-
-    public void putForks(int leftFork, int rightFork){
-        forks[leftFork].setAvailable(true);
-        forks[rightFork].setAvailable(true);
     }
 
     private void init() {
@@ -50,17 +36,17 @@ public class Table extends Thread {
     }
 
     private void putForksOnTable() {
-        forks = new Fork[COUNT_ELEMENTS];
-        for (int i = 0; i < COUNT_ELEMENTS; i++) {
-            forks[i] = new Fork(i + 1);
+        forks = new ArrayList<>(COUNT_ELEMENTS);
+        for (int i = 1; i <= COUNT_ELEMENTS; i++) {
+            forks.add(new Fork(i));
         }
     }
 
     private void placePeople() {
-        thinkers = new Thinker[COUNT_ELEMENTS];
-        for (int i = 0; i < COUNT_ELEMENTS; i++) {
-            thinkers[i] = new Thinker(i + 1, this,
-                    i, (i + 1) % COUNT_ELEMENTS, cdl);
+        thinkers = new ArrayList<>(COUNT_ELEMENTS);
+        thinkers.add(new Thinker(1, forks.get(0), forks.get(COUNT_ELEMENTS - 1), cdl));
+        for (int i = 1; i < COUNT_ELEMENTS; i++) {
+            thinkers.add(new Thinker(i + 1, forks.get(i), forks.get(i - 1), cdl));
         }
     }
 }
