@@ -33,10 +33,13 @@ public class Thinker extends Thread {
     private void eating() {
         if (table.tryGetForks(leftFork, rightFork)) {
             countCompletedMeal++;
-            System.out.println(Thread.currentThread().getName() + " кушает "
-                    + countCompletedMeal + " раз вилками L:" + (leftFork + 1)  + " и R:" + (rightFork + 1));
+            System.out.println(Thread.currentThread().getName()
+                    + " кушает " + countCompletedMeal + " раз вилками L:"
+                    + (leftFork + 1)  + " и R:" + (rightFork + 1));
             sleepMS(1000);
             table.putForks(leftFork, rightFork);
+            System.out.println(Thread.currentThread().getName() + " положил вилки "
+                    + (leftFork + 1)  + " и " + (rightFork + 1));
         }
     }
 
